@@ -1,9 +1,9 @@
-﻿using System;
+﻿using Core;
+using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Core;
 
 namespace ConsoleUI
 {
@@ -11,72 +11,119 @@ namespace ConsoleUI
     {
         static void Main(string[] args)
         {
-            Console.WriteLine(" SYSTEM INFORMATION ");
+            Console.WriteLine(" STRUCT TEST ");
 
-            Console.WriteLine("Operating System: " + Environment.OSVersion);
+            Price price = new Price(100, "USD");
 
-            long memory = GC.GetTotalMemory(false);
+            Console.WriteLine($"Before method: {price.Amount} {price.Currency}");
+            ChangePrice(price);
+            Console.WriteLine($"After method:  {price.Amount} {price.Currency}");
 
-            Console.WriteLine("Used Memory: " + memory + " bytes");
+            Console.WriteLine("\n BOXING / UNBOXING ");
 
-            Console.WriteLine();
+            object boxedNumber = 10;
+            int unboxedNumber = (int)boxedNumber;
 
-            // Book object
-            Book book = new Book
+            Console.WriteLine($"Boxed value: {boxedNumber}");
+            Console.WriteLine($"Unboxed value: {unboxedNumber}");
+
+            Stopwatch stopwatch = new Stopwatch();
+
+            ArrayList arrayList = new ArrayList();
+
+            stopwatch.Start();
+            for (int i = 0; i < 1000000; i++)
             {
-                Title = "The Witcher",
-                Pages = 320,
-                Rating = 9.4,
-                ReleaseDate = new DateTime(2015, 5, 19),
-                IsAvailable = true
+                arrayList.Add(i);
+            }
+            stopwatch.Stop();
+
+            long arrayListTime = stopwatch.ElapsedMilliseconds;
+
+            List<int> intList = new List<int>();
+
+            stopwatch.Restart();
+            for (int i = 0; i < 1000000; i++)
+            {
+                intList.Add(i);
+            }
+            stopwatch.Stop();
+
+            long listTime = stopwatch.ElapsedMilliseconds;
+
+            Console.WriteLine($"ArrayList time: {arrayListTime} ms");
+            Console.WriteLine($"List<int> time: {listTime} ms");
+            Console.WriteLine($"Difference: {arrayListTime - listTime} ms");
+
+            Console.WriteLine("\n BOOK COLLECTION ");
+
+            List<Book> books = new List<Book>
+            {
+                new Book("The Witcher", 320, 9.4, new DateTime(2015, 5, 19), true),
+                new Book("Metro 2033", 400, 8.9, new DateTime(2005, 3, 16), true),
+                new Book("Dune", 500, 9.7, new DateTime(1976, 8, 1), false),
+                new Book("1984", 280, 9.1, new DateTime(1984, 6, 8), true),
+                new Book("The Hobbit", 310, 9.5, new DateTime(1967, 9, 21), true),
+                new Book("Dracula", 350, 8.2, new DateTime(1869, 5, 26), false),
+                new Book("Fahrenheit 451", 290, 8.8, new DateTime(1956, 10, 19), true),
+                new Book("Foundation", 410, 9.0, new DateTime(1951, 1, 1), true),
+                new Book("Neuromancer", 330, 8.7, new DateTime(1989, 7, 1), false),
+                new Book("It", 620, 9.3, new DateTime(1991, 9, 15), true)
             };
 
-            // Author object
-            Author author = new Author
+            Console.WriteLine("\n WHERE: Rating > 9.0 ");
+            Console.WriteLine($"{"Title",-20} {"Rating",-10} {"Available"}");
+
+            var highRatedBooks = books.Where(book => book.Rating > 9.0);
+
+            foreach (var book in highRatedBooks)
             {
-                FullName = "Andrzej Sapkowski",
-                Age = 76,
-                Salary = 15000.50,
-                BirthDate = new DateTime(1948, 6, 21),
-                IsAlive = true
-            };
+                Console.WriteLine($"{book.Title,-20} {book.Rating,-10} {book.IsAvailable}");
+            }
 
-            // User object
-            User user = new User
+            Console.WriteLine("\n ORDER BY: Pages, Title ");
+            Console.WriteLine($"{"Title",-20} {"Pages",-10} {"Rating"}");
+
+            var sortedBooks = books
+                .OrderBy(book => book.Pages)
+                .ThenBy(book => book.Title);
+
+            foreach (var book in sortedBooks)
             {
-                Username = "kReaGeN",
-                BooksReserved = 2,
-                Balance = 120.75,
-                RegistrationDate = DateTime.Now,
-                IsPremium = true
-            };
+                Console.WriteLine($"{book.Title,-20} {book.Pages,-10} {book.Rating}");
+            }
 
-            Console.WriteLine(" BOOK ");
-            Console.WriteLine($"Title: {book.Title}");
-            Console.WriteLine($"Pages: {book.Pages}");
-            Console.WriteLine($"Rating: {book.Rating}");
-            Console.WriteLine($"Release Date: {book.ReleaseDate}");
-            Console.WriteLine($"Available: {book.IsAvailable}");
+            Console.WriteLine("\n SELECT: Titles ");
 
-            Console.WriteLine();
+            var bookTitles = books.Select(book => book.Title);
 
-            Console.WriteLine(" AUTHOR ");
-            Console.WriteLine($"Full Name: {author.FullName}");
-            Console.WriteLine($"Age: {author.Age}");
-            Console.WriteLine($"Salary: {author.Salary}");
-            Console.WriteLine($"Birth Date: {author.BirthDate}");
-            Console.WriteLine($"Alive: {author.IsAlive}");
+            foreach (var title in bookTitles)
+            {
+                Console.WriteLine(title);
+            }
 
-            Console.WriteLine();
+            Console.WriteLine("\n FIRST OR DEFAULT ");
 
-            Console.WriteLine(" USER ");
-            Console.WriteLine($"Username: {user.Username}");
-            Console.WriteLine($"Books Reserved: {user.BooksReserved}");
-            Console.WriteLine($"Balance: {user.Balance}");
-            Console.WriteLine($"Registration Date: {user.RegistrationDate}");
-            Console.WriteLine($"Premium: {user.IsPremium}");
+            var foundBook = books.FirstOrDefault(book => book.Title == "Dune");
+
+            if (foundBook != null)
+            {
+                Console.WriteLine($"Book found: {foundBook.Title}, rating: {foundBook.Rating}");
+            }
+            else
+            {
+                Console.WriteLine("Book not found");
+            }
 
             Console.ReadKey();
+        }
+
+        static void ChangePrice(Price price)
+        {
+            price.Amount = 999;
+            price.Currency = "EUR";
+
+            Console.WriteLine($"Inside method: {price.Amount} {price.Currency}");
         }
     }
 }

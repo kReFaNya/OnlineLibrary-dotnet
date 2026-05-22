@@ -13,5 +13,14 @@ namespace Core
         public double Rating { get; set; }
         public DateTime ReleaseDate { get; set; }
         public bool IsAvailable { get; set; }
+
+        public Book(string title, int pages, double rating, DateTime releaseDate, bool isAvailable)
+        {
+            Title = title;
+            Pages = pages;
+            Rating = rating;
+            ReleaseDate = releaseDate;
+            IsAvailable = isAvailable;
+        }
     }
 }
