@@ -11,119 +11,108 @@ namespace ConsoleUI
     {
         static void Main(string[] args)
         {
-            Console.WriteLine(" STRUCT TEST ");
+            Console.WriteLine(" EXTENSION METHOD ");
 
-            Price price = new Price(100, "USD");
+            string description = "Online library contains books authors and users";
+            int wordCount = description.WordCount();
 
-            Console.WriteLine($"Before method: {price.Amount} {price.Currency}");
-            ChangePrice(price);
-            Console.WriteLine($"After method:  {price.Amount} {price.Currency}");
+            Console.WriteLine($"Text: {description}");
+            Console.WriteLine($"Word count: {wordCount}");
 
-            Console.WriteLine("\n BOXING / UNBOXING ");
+            Console.WriteLine();
 
-            object boxedNumber = 10;
-            int unboxedNumber = (int)boxedNumber;
+            LibraryStorage storage = new LibraryStorage();
 
-            Console.WriteLine($"Boxed value: {boxedNumber}");
-            Console.WriteLine($"Unboxed value: {unboxedNumber}");
+            storage.AddBook(new Book(1, "The Witcher", 320, 9.4, new DateTime(2015, 5, 19), true, "Fantasy"));
+            storage.AddBook(new Book(2, "Metro 2033", 400, 8.9, new DateTime(2005, 3, 16), true, "Post-apocalyptic"));
+            storage.AddBook(new Book(3, "Dune", 500, 9.7, new DateTime(1976, 8, 1), false, "Science Fiction"));
+            storage.AddBook(new Book(4, "1984", 280, 9.1, new DateTime(1984, 6, 8), true, "Dystopia"));
+            storage.AddBook(new Book(5, "The Hobbit", 310, 9.5, new DateTime(1967, 9, 21), true, "Fantasy"));
+            storage.AddBook(new Book(6, "Dracula", 350, 8.2, new DateTime(1869, 5, 26), false, "Horror"));
+            storage.AddBook(new Book(7, "Fahrenheit 451", 290, 8.8, new DateTime(1956, 10, 19), true, "Dystopia"));
+            storage.AddBook(new Book(8, "Foundation", 410, 9.0, new DateTime(1951, 1, 1), true, "Science Fiction"));
+            storage.AddBook(new Book(9, "Neuromancer", 330, 8.7, new DateTime(1989, 7, 1), false, "Cyberpunk"));
+            storage.AddBook(new Book(10, "It", 620, 9.3, new DateTime(1991, 9, 15), true, "Horror"));
 
-            Stopwatch stopwatch = new Stopwatch();
+            Console.WriteLine(" FOREACH STORAGE ");
+            Console.WriteLine($"{"ID",-5} {"Title",-20} {"Rating",-10} {"Category"}");
 
-            ArrayList arrayList = new ArrayList();
-
-            stopwatch.Start();
-            for (int i = 0; i < 1000000; i++)
+            foreach (Book book in storage)
             {
-                arrayList.Add(i);
-            }
-            stopwatch.Stop();
-
-            long arrayListTime = stopwatch.ElapsedMilliseconds;
-
-            List<int> intList = new List<int>();
-
-            stopwatch.Restart();
-            for (int i = 0; i < 1000000; i++)
-            {
-                intList.Add(i);
-            }
-            stopwatch.Stop();
-
-            long listTime = stopwatch.ElapsedMilliseconds;
-
-            Console.WriteLine($"ArrayList time: {arrayListTime} ms");
-            Console.WriteLine($"List<int> time: {listTime} ms");
-            Console.WriteLine($"Difference: {arrayListTime - listTime} ms");
-
-            Console.WriteLine("\n BOOK COLLECTION ");
-
-            List<Book> books = new List<Book>
-            {
-                new Book("The Witcher", 320, 9.4, new DateTime(2015, 5, 19), true),
-                new Book("Metro 2033", 400, 8.9, new DateTime(2005, 3, 16), true),
-                new Book("Dune", 500, 9.7, new DateTime(1976, 8, 1), false),
-                new Book("1984", 280, 9.1, new DateTime(1984, 6, 8), true),
-                new Book("The Hobbit", 310, 9.5, new DateTime(1967, 9, 21), true),
-                new Book("Dracula", 350, 8.2, new DateTime(1869, 5, 26), false),
-                new Book("Fahrenheit 451", 290, 8.8, new DateTime(1956, 10, 19), true),
-                new Book("Foundation", 410, 9.0, new DateTime(1951, 1, 1), true),
-                new Book("Neuromancer", 330, 8.7, new DateTime(1989, 7, 1), false),
-                new Book("It", 620, 9.3, new DateTime(1991, 9, 15), true)
-            };
-
-            Console.WriteLine("\n WHERE: Rating > 9.0 ");
-            Console.WriteLine($"{"Title",-20} {"Rating",-10} {"Available"}");
-
-            var highRatedBooks = books.Where(book => book.Rating > 9.0);
-
-            foreach (var book in highRatedBooks)
-            {
-                Console.WriteLine($"{book.Title,-20} {book.Rating,-10} {book.IsAvailable}");
+                Console.WriteLine($"{book.Id,-5} {book.Title,-20} {book.Rating,-10} {book.Category}");
             }
 
-            Console.WriteLine("\n ORDER BY: Pages, Title ");
-            Console.WriteLine($"{"Title",-20} {"Pages",-10} {"Rating"}");
+            Console.WriteLine();
 
-            var sortedBooks = books
-                .OrderBy(book => book.Pages)
-                .ThenBy(book => book.Title);
+            Console.WriteLine(" DICTIONARY SEARCH ");
 
-            foreach (var book in sortedBooks)
-            {
-                Console.WriteLine($"{book.Title,-20} {book.Pages,-10} {book.Rating}");
-            }
-
-            Console.WriteLine("\n SELECT: Titles ");
-
-            var bookTitles = books.Select(book => book.Title);
-
-            foreach (var title in bookTitles)
-            {
-                Console.WriteLine(title);
-            }
-
-            Console.WriteLine("\n FIRST OR DEFAULT ");
-
-            var foundBook = books.FirstOrDefault(book => book.Title == "Dune");
+            Book foundBook = storage.FindBookById(3);
 
             if (foundBook != null)
             {
-                Console.WriteLine($"Book found: {foundBook.Title}, rating: {foundBook.Rating}");
+                Console.WriteLine($"Book found by ID: {foundBook.Title}, rating: {foundBook.Rating}");
             }
             else
             {
                 Console.WriteLine("Book not found");
             }
 
+            Console.WriteLine();
+
+            Console.WriteLine(" LINQ FOR DICTIONARY ");
+            Console.WriteLine($"{"Title",-20} {"Rating",-10} {"Category"}");
+
+            List<Book> highRatedBooks = storage.GetHighRatedBooksFromDictionary(9.3);
+
+            foreach (Book book in highRatedBooks)
+            {
+                Console.WriteLine($"{book.Title,-20} {book.Rating,-10} {book.Category}");
+            }
+
+            Console.WriteLine();
+
+            Console.WriteLine(" HASHSET ");
+
+            HashSet<string> categories = new HashSet<string>();
+
+            categories.Add("Fantasy");
+            categories.Add("Horror");
+            categories.Add("Science Fiction");
+            categories.Add("Fantasy");
+
+            Console.WriteLine("Categories after adding duplicate Fantasy:");
+
+            foreach (string category in categories)
+            {
+                Console.WriteLine(category);
+            }
+
+            Console.WriteLine();
+
+            HashSet<string> firstReaderCategories = new HashSet<string>
+            {
+                "Fantasy",
+                "Horror",
+                "Dystopia"
+            };
+
+            HashSet<string> secondReaderCategories = new HashSet<string>
+            {
+                "Fantasy",
+                "Science Fiction",
+                "Dystopia"
+            };
+
+            firstReaderCategories.IntersectWith(secondReaderCategories);
+
+            Console.WriteLine("Common categories:");
+
+            foreach (string category in firstReaderCategories)
+            {
+                Console.WriteLine(category);
+            }
+
             Console.ReadKey();
-        }
-
-        static void ChangePrice(Price price)
-        {
-            price.Amount = 999;
-            price.Currency = "EUR";
-
-            Console.WriteLine($"Inside method: {price.Amount} {price.Currency}");
         }
     }
 }
