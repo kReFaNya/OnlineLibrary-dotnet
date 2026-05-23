@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+
 namespace Core
 {
     public static class StringExtensions
@@ -15,7 +16,7 @@ namespace Core
                 return 0;
             }
 
-            return text.Split(' ', StringSplitOptions.RemoveEmptyEntries).Length;
+            return text.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).Length;
         }
     }
 }
