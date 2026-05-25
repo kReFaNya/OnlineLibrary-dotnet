@@ -43,7 +43,12 @@
   <ItemGroup>
     <Compile Include="Author.cs" />
     <Compile Include="Book.cs" />
+    <Compile Include="IShow.cs" />
+    <Compile Include="LibraryConfiguration.cs" />
+    <Compile Include="LibraryController.cs" />
+    <Compile Include="LibraryItem.cs" />
     <Compile Include="LibraryStorage.cs" />
+    <Compile Include="Magazine.cs" />
     <Compile Include="Price.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StringExtensions.cs" />

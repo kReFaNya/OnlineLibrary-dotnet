@@ -4,49 +4,46 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using System.Collections.Generic;
-using System.Linq;
-
 namespace Core
 {
     public class LibraryStorage
     {
-        private List<Book> books = new List<Book>();
-        private Dictionary<int, Book> booksById = new Dictionary<int, Book>();
+        private List<LibraryItem> items = new List<LibraryItem>();
+        private Dictionary<int, LibraryItem> itemsById = new Dictionary<int, LibraryItem>();
 
-        public void AddBook(Book book)
+        public void AddItem(LibraryItem item)
         {
-            books.Add(book);
+            items.Add(item);
 
-            if (!booksById.ContainsKey(book.Id))
+            if (!itemsById.ContainsKey(item.Id))
             {
-                booksById.Add(book.Id, book);
+                itemsById.Add(item.Id, item);
             }
         }
 
-        public Book FindBookById(int id)
+        public LibraryItem FindItemById(int id)
         {
-            if (booksById.ContainsKey(id))
+            if (itemsById.ContainsKey(id))
             {
-                return booksById[id];
+                return itemsById[id];
             }
 
             return null;
         }
 
-        public List<Book> GetHighRatedBooksFromDictionary(double minRating)
+        public List<LibraryItem> GetAvailableItems()
         {
-            return booksById
-                .Where(pair => pair.Value.Rating >= minRating)
+            return itemsById
+                .Where(pair => pair.Value.IsAvailable)
                 .Select(pair => pair.Value)
                 .ToList();
         }
 
-        public IEnumerator<Book> GetEnumerator()
+        public IEnumerator<LibraryItem> GetEnumerator()
         {
-            foreach (Book book in books)
+            foreach (LibraryItem item in items)
             {
-                yield return book;
+                yield return item;
             }
         }
     }
