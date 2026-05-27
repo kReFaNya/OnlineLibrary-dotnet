@@ -13,6 +13,10 @@ namespace Core
         public DateTime ReleaseDate { get; set; }
         public bool IsAvailable { get; set; }
 
+        protected LibraryItem()
+        {
+        }
+
         protected LibraryItem(int id, string title, DateTime releaseDate, bool isAvailable)
         {
             Id = id;

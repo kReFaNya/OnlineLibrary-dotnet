@@ -11,76 +11,65 @@ namespace ConsoleUI
     {
         static void Main(string[] args)
         {
-            Console.WriteLine(" COMPOSITION ");
+            string jsonPath = "books.json";
+            string xmlPath = "available_books.xml";
+            string logPath = "log.txt";
 
-            LibraryController controller = new LibraryController();
-            controller.ShowConfiguration();
-
-            Console.WriteLine();
-
-            Console.WriteLine(" AGGREGATION ");
-
-            Book book1 = new Book(1, "The Witcher", 320, 9.4, new DateTime(2015, 5, 19), true, "Fantasy");
-            Book book2 = new Book(2, "Dune", 500, 9.7, new DateTime(1976, 8, 1), false, "Science Fiction");
-
-            Magazine magazine1 = new Magazine(3, "National Geographic", new DateTime(2022, 4, 10), true, 120, "National Geographic Partners");
-            Magazine magazine2 = new Magazine(4, "Science Today", new DateTime(2023, 9, 15), true, 45, "Science Publishing");
-
-            LibraryStorage storage = new LibraryStorage();
-
-            storage.AddItem(book1);
-            storage.AddItem(book2);
-            storage.AddItem(magazine1);
-            storage.AddItem(magazine2);
-
-            Console.WriteLine("Items in storage:");
-
-            foreach (LibraryItem item in storage)
+            List<Book> books = new List<Book>
             {
-                item.ShowShortInfo();
-            }
-
-            Console.WriteLine();
-
-            Console.WriteLine(" DICTIONARY SEARCH ");
-
-            LibraryItem foundItem = storage.FindItemById(3);
-
-            if (foundItem != null)
-            {
-                Console.WriteLine("Found item:");
-                foundItem.ShowInfo();
-            }
-            else
-            {
-                Console.WriteLine("Item not found");
-            }
-
-            Console.WriteLine();
-
-            Console.WriteLine(" POLYMORPHISM ");
-
-            IShow[] showItems = new IShow[]
-            {
-                book1,
-                book2,
-                magazine1,
-                magazine2
+                new Book(1, "The Witcher", 320, 9.4, new DateTime(2015, 5, 19), true, "Fantasy"),
+                new Book(2, "Dune", 500, 9.7, new DateTime(1976, 8, 1), false, "Science Fiction"),
+                new Book(3, "The Hobbit", 310, 9.5, new DateTime(1967, 9, 21), true, "Fantasy"),
+                new Book(4, "Dracula", 350, 8.2, new DateTime(1869, 5, 26), false, "Horror"),
+                new Book(5, "Foundation", 410, 9.0, new DateTime(1951, 1, 1), true, "Science Fiction")
             };
 
-            foreach (IShow showItem in showItems)
+            BookFileService fileService = new BookFileService();
+
+            using (ResourceManager resourceManager = new ResourceManager(logPath))
             {
-                showItem.ShowInfo();
+                Console.WriteLine(" JSON SERIALIZATION ");
+
+                fileService.SaveToJson(books, jsonPath);
+                resourceManager.WriteLog("Books saved to JSON file.");
+
+                Console.WriteLine("Books saved to JSON file.");
+
+                Console.WriteLine();
+
+                Console.WriteLine(" JSON DESERIALIZATION ");
+
+                List<Book> loadedBooks = fileService.LoadFromJson(jsonPath);
+                resourceManager.WriteLog("Books loaded from JSON file.");
+
+                foreach (Book book in loadedBooks)
+                {
+                    Console.WriteLine(book.Id + ". " + book.Title + " - " + book.Category + " - Available: " + book.IsAvailable);
+                }
+
+                Console.WriteLine();
+
+                Console.WriteLine(" XML EXPORT ");
+
+                fileService.ExportAvailableBooksToXml(loadedBooks, xmlPath);
+                resourceManager.WriteLog("Available books exported to XML file.");
+
+                Console.WriteLine("Available books exported to XML file.");
+
+                Console.WriteLine();
+
+                Console.WriteLine(" FILE VALIDATION ");
+
+                List<Book> missingBooks = fileService.LoadFromJson("missing_file.json");
+
+                Console.WriteLine("Loaded books from missing file: " + missingBooks.Count);
+
+                resourceManager.WriteLog("File validation completed.");
             }
 
             Console.WriteLine();
 
-            Console.WriteLine(" AVAILABLE ITEMS ");
-
-            foreach (LibraryItem item in storage.GetAvailableItems())
-            {
-                Console.WriteLine($"{item.GetItemType()}: {item.Title}");
-            }
+            Console.WriteLine("ResourceManager disposed automatically by using block.");
 
             Console.ReadKey();
         }

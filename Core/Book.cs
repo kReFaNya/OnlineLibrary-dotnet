@@ -12,6 +12,11 @@ namespace Core
         public double Rating { get; set; }
         public string Category { get; set; }
 
+        public Book()
+            : base()
+        {
+        }
+
         public Book(int id, string title, int pages, double rating, DateTime releaseDate, bool isAvailable, string category)
             : base(id, title, releaseDate, isAvailable)
         {
