@@ -1,0 +1,67 @@
+﻿<Window x:Class="WpfUI.BookDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Книга" Height="390" Width="420"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize">
+
+    <Window.Resources>
+        <Style x:Key="DialogButtonStyle" TargetType="Button">
+            <Setter Property="Margin" Value="8"/>
+            <Setter Property="Padding" Value="8"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Width" Value="120"/>
+        </Style>
+    </Window.Resources>
+
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="130"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <TextBlock Grid.Row="0" Grid.Column="0" Text="ID:" Margin="5"/>
+        <TextBox Grid.Row="0" Grid.Column="1" x:Name="TxtId" Margin="5"/>
+
+        <TextBlock Grid.Row="1" Grid.Column="0" Text="Назва:" Margin="5"/>
+        <TextBox Grid.Row="1" Grid.Column="1" x:Name="TxtTitle" Margin="5"/>
+
+        <TextBlock Grid.Row="2" Grid.Column="0" Text="Сторінки:" Margin="5"/>
+        <TextBox Grid.Row="2" Grid.Column="1" x:Name="TxtPages" Margin="5"/>
+
+        <TextBlock Grid.Row="3" Grid.Column="0" Text="Рейтинг:" Margin="5"/>
+        <TextBox Grid.Row="3" Grid.Column="1" x:Name="TxtRating" Margin="5"/>
+
+        <TextBlock Grid.Row="4" Grid.Column="0" Text="Дата випуску:" Margin="5"/>
+        <DatePicker Grid.Row="4" Grid.Column="1" x:Name="DateRelease" Margin="5"/>
+
+        <TextBlock Grid.Row="5" Grid.Column="0" Text="Категорія:" Margin="5"/>
+        <TextBox Grid.Row="5" Grid.Column="1" x:Name="TxtCategory" Margin="5"/>
+
+        <CheckBox Grid.Row="6" Grid.Column="1" x:Name="ChkAvailable"
+                  Content="Доступна" Margin="5"/>
+
+        <StackPanel Grid.Row="7" Grid.ColumnSpan="2"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Center">
+            <Button Content="OK"
+                    Style="{StaticResource DialogButtonStyle}"
+                    Click="BtnOk_Click"/>
+
+            <Button Content="Cancel"
+                    Style="{StaticResource DialogButtonStyle}"
+                    Click="BtnCancel_Click"/>
+        </StackPanel>
+    </Grid>
+</Window>
